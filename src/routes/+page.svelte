@@ -1,11 +1,9 @@
 <script>
+	import Math from '$lib/components/Math.svelte';
 	let equationImgs;
 	let firstImgUrl;
-	
+
 	export let form;
-
-	if (form) console.log(form)
-
 	$: if (equationImgs) firstImgUrl = URL.createObjectURL(equationImgs[0]);
 </script>
 
@@ -23,5 +21,10 @@
 <!-- Output -->
 {#if form?.texOutput}
 	<h2>Output</h2>
-	<pre>{JSON.stringify(form.texOutput)}</pre>
+	<pre>{form.texOutput}</pre>
+
+	{#key math}
+		<!-- MathJax Preview -->
+		<Math>$${form.texOutput}$$</Math>
+	{/key}
 {/if}
