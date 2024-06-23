@@ -1,5 +1,6 @@
 <script>
 	import Math from '$lib/components/Math.svelte';
+	import DragDrop from '$lib/components/DragDrop.svelte';
 	import { enhance } from '$app/forms';
 	import { tick } from 'svelte';
 
@@ -35,7 +36,6 @@
 	}
 
 	const dropHandler = (event) => {
-		event.preventDefault();
 		if (!event.dataTransfer.items[0].type.includes('image')) {
 			return;
 		} else {
@@ -59,37 +59,13 @@
 	};
 </script>
 
-<!-- Support for copy and paste -->
-<svelte:window on:paste={pasteHandler} />
-
 <div class="container">
 	<main>
 		<h1>LaTeX OCR Nougat</h1>
 		<p>Easily convert images with equations to TeX commands.</p>
 		<section>
 			<!-- Drop and drop zone for image -->
-			<div
-				id="dropzone"
-				role="application"
-				aria-dropeffect="copy"
-				on:drop={dropHandler}
-				on:dragover={(e) => e.preventDefault()}
-			>
-				<!-- Image preview zone -->
-				{#if !firstImgUrl}
-					<p>Drag and drop image that contains equations</p>
-					<p>or</p>
-					<p>Paste (Ctrl + V) from clipboard</p>
-					<p>or</p>
-					<label>
-						<!-- hidden input for manual file selection -->
-						<i class="button">Select image manually</i>
-						<input style="display: none;" type="file" bind:files={equationImgs} />
-					</label>
-				{:else}
-					<img src={firstImgUrl} alt="Preview" />
-				{/if}
-			</div>
+			<DragDrop bind:files={equationImgs} previewImgUrl={firstImgUrl} {dropHandler} />
 
 			<!-- Form for final submit -->
 			<form
@@ -157,18 +133,6 @@
 
 	section {
 		margin: 2em 0em;
-	}
-
-	#dropzone {
-		width: 100%;
-		border: 2px dashed var(--primary-color);
-		border-radius: 5pt;
-		text-align: center;
-		padding: 1rem;
-	}
-
-	#dropzone img {
-		max-width: 100%;
 	}
 
 	#texedit {
