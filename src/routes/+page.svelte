@@ -8,8 +8,6 @@
 	let equationImgs, imgForm, firstImgBase64, texOutput, errorMsg;
 	let isLoading = false;
 
-	export let form;
-
 	const fileToBase64 = (file) => {
 		return new Promise((resolve) => {
 			const reader = new FileReader();
@@ -36,16 +34,20 @@
 	}
 
 	// form return handler
-	$: if (form) {
-		if (form.success) {
-			isLoading = false;
-			errorMsg = false;
-			texOutput = form.texOutput;
-		} else {
-			isLoading = false;
-			errorMsg = form.message;
-		}
-	}
+	const formActionResultHandler = () => {
+		return async ({ result, update }) => {
+			if (result.data.success) {
+				// form successfully returned data
+				isLoading = false;
+				errorMsg = false;
+				texOutput = result.data.texOutput;
+			} else {
+				isLoading = false;
+				errorMsg = result.data.message;
+			}
+			await update({ reset: false });
+		};
+	};
 
 	const dropHandler = (event) => {
 		if (!event.dataTransfer.items[0].type.includes('image')) {
@@ -104,11 +106,7 @@
 				enctype="multipart/form-data"
 				action="?/postEquation"
 				bind:this={imgForm}
-				use:enhance={() => {
-					return async ({ update }) => {
-						await update({ reset: false });
-					};
-				}}
+				use:enhance={formActionResultHandler}
 			>
 				<input required type="hidden" name="equationImgBase64" value={firstImgBase64} />
 			</form>
