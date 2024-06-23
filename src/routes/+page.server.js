@@ -1,4 +1,4 @@
-import { error } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { queryHuggingFace } from '$lib/huggingface';
 
 export const actions = {
@@ -9,12 +9,13 @@ export const actions = {
 		return queryHuggingFace(equationImgBase64)
 			.then((data) => {
 				return {
-					message: 'success',
+					success: true,
 					texOutput: data[0].generated_text
 				};
 			})
 			.catch((err) => {
-				return error(400, {
+				return fail(400, {
+					success: false,
 					message: err
 				});
 			});

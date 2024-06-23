@@ -4,9 +4,8 @@
 	import { enhance } from '$app/forms';
 	import { tick } from 'svelte';
 
-	let equationImgs;
-	let imgForm;
-	let firstImgBase64;
+	let equationImgs, imgForm, firstImgBase64, texOutput, errorMsg;
+	let isLoading = false;
 
 	export let form;
 
@@ -30,9 +29,20 @@
 		// wait for image input to be updated
 		// otherwise, the form will be empty
 		tick().then(() => {
-			console.log(document.querySelector('#imgForm')[0]);
+			isLoading = true;
 			autoSubmit();
 		});
+	}
+
+	// form return handler
+	$: if (form) {
+		if (form.success) {
+			isLoading = false;
+			texOutput = form.texOutput;
+		} else {
+			isLoading = false;
+			errorMsg = form.message;
+		}
 	}
 
 	const dropHandler = (event) => {
@@ -68,6 +78,7 @@
 			<DragDrop
 				bind:files={equationImgs}
 				previewImgUrl={firstImgUrl}
+				{isLoading}
 				{dropHandler}
 				{pasteHandler}
 			/>
@@ -94,11 +105,11 @@
 			<!-- Output -->
 			{#if form?.texOutput}
 				<h2>Output</h2>
-				<pre id="texedit" contenteditable bind:textContent={form.texOutput}></pre>
+				<pre id="texedit" contenteditable bind:textContent={texOutput}></pre>
 
-				{#key form.texOutput}
+				{#key texOutput}
 					<!-- MathJax Preview -->
-					<Math>$${form.texOutput}$$</Math>
+					<Math>$${texOutput}$$</Math>
 				{/key}
 			{/if}
 		</section>

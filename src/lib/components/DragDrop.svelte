@@ -1,6 +1,7 @@
 <script>
 	export let files, previewImgUrl, dropHandler, pasteHandler;
 	export let enablePaste = true;
+	export let isLoading = false;
 
 	let onDragover = false;
 
@@ -63,7 +64,20 @@
 				</label>
 			</div>
 		{:else}
-			<img src={previewImgUrl} alt="Preview" />
+			<div id="imgPreview" class="relative flex justify-center items-center">
+				{#if isLoading}
+					<!-- loading overlay -->
+					<div class="absolute inset-0 flex justify-center items-center">
+						<div class="loading loading-spinner loading-lg"></div>
+					</div>
+				{/if}
+				<img
+					src={previewImgUrl}
+					alt="Upload preview"
+					class="transition-opacity"
+					class:opacity-50={isLoading}
+				/>
+			</div>
 		{/if}
 	</div>
 </div>
