@@ -112,7 +112,19 @@
 			>
 				<input required type="hidden" name="equationImgBase64" value={firstImgBase64} />
 			</form>
-			<button type="submit" form="imgForm" class="button">Convert to TeX</button>
+		</section>
+		<section id="controls" class="flex justify-center">
+			<button
+				type="submit"
+				form="imgForm"
+				class="btn btn-primary"
+				class:btn-disabled={!firstImgBase64 | isLoading}
+			>
+				{#if isLoading}
+					<div class="loading"></div>
+				{/if}
+				Convert to TeX
+			</button>
 		</section>
 
 		<!-- Output -->
