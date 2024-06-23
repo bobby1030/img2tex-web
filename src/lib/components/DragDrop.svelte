@@ -2,9 +2,19 @@
 	export let files, previewImgUrl, dropHandler, pasteHandler;
 	export let enablePaste = true;
 
+	let onDragover = false;
+
+	const innerDragoverHandler = (event) => {
+		event.preventDefault();
+		onDragover = true;
+	};
+
+	const innderDragleaveHandler = (event) => (onDragover = false);
+
 	const innerDropHandler = (event) => {
 		event.preventDefault();
 		dropHandler(event);
+		onDragover = false; // reset dragover state after drop
 	};
 
 	const innerPasteHandler = (event) => {
@@ -20,46 +30,49 @@
 
 <!-- Drop and drop zone for image -->
 <div
-	class="dropzone"
+	class="bg-base-200 rounded-box p-5 text-center"
 	role="application"
 	aria-dropeffect="copy"
 	on:drop={innerDropHandler}
-	on:dragover={(e) => e.preventDefault()}
+	on:dragover={innerDragoverHandler}
+	on:dragleave={innderDragleaveHandler}
 >
-	<!-- Image preview zone -->
-	{#if !previewImgUrl}
-		<p>Drag and drop image that contains equations</p>
-		<p>or</p>
-		<p>Paste (Ctrl + V) from clipboard</p>
-		<p>or</p>
-		<label>
-			<!-- hidden input for manual file selection -->
-			<i class="button">Select image manually</i>
-			<input style="display: none;" type="file" bind:files />
-		</label>
-	{:else}
-		<img src={previewImgUrl} alt="Preview" />
-	{/if}
+	<!-- inner zone container -->
+	<div
+		class="rounded-box border-4 border-spacing-3 border-base-100 border-dashed p-5"
+		class:!border-accent={onDragover}
+	>
+		<!-- Image preview zone -->
+		{#if !previewImgUrl}
+			<div class="instruction">
+				<span class="material-symbols-rounded"> place_item </span> Drop image with equations
+			</div>
+			<div>or</div>
+			<div class="instruction">
+				<span class="material-symbols-rounded"> content_paste </span> Paste
+				<span class="kbd kbd-sm">Ctrl + V</span> from clipboard
+			</div>
+			<div>or</div>
+			<div class="instruction">
+				<label>
+					<!-- hidden input for manual file selection -->
+					<i class="btn btn-accent"
+						><span class="material-symbols-rounded">file_open</span>Select image</i
+					>
+					<input style="display: none;" type="file" bind:files />
+				</label>
+			</div>
+		{:else}
+			<img src={previewImgUrl} alt="Preview" />
+		{/if}
+	</div>
 </div>
 
 <style>
-	.dropzone {
-		width: 100%;
-		border: 2px dashed var(--primary-color);
-		border-radius: 5pt;
-		text-align: center;
-		padding: 1rem;
-	}
+	.instruction {
+		/* Rows of instructions */
 
-	.dropzone img {
-		max-width: 100%;
-	}
-
-	.button {
-		cursor: pointer;
-		background-color: var(--primary-color);
-		color: white;
-		padding: 0.5rem 1rem;
-		border-radius: 2pt;
+		@apply my-2 font-semibold;
+		@apply flex items-center justify-center gap-1; /* vertically and horizontally center */
 	}
 </style>
