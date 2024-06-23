@@ -24,6 +24,11 @@
 			pasteHandler(event);
 		}
 	};
+
+	// Clear image preview
+	const resetHandler = () => {
+		previewImgUrl = undefined;
+	};
 </script>
 
 <!-- Support for copy and paste -->
@@ -70,6 +75,12 @@
 					<div class="absolute inset-0 flex justify-center items-center">
 						<div class="loading loading-spinner loading-lg"></div>
 					</div>
+				{:else}
+					<!-- reset indicator -->
+					<button class="overlay-btn" on:click={resetHandler}>
+						<span class="material-symbols-rounded">delete</span>
+						Clear image
+					</button>
 				{/if}
 				<img
 					src={previewImgUrl}
@@ -83,9 +94,14 @@
 </div>
 
 <style>
+	.overlay-btn {
+		@apply absolute inset-0 flex justify-center items-center;
+		@apply bg-base-300 bg-opacity-80 text-base-content text-lg font-semibold;
+		@apply transition-opacity opacity-0 hover:opacity-100 hover:cursor-pointer;
+	}
+
 	.instruction {
 		/* Rows of instructions */
-
 		@apply my-2 font-semibold;
 		@apply flex items-center justify-center gap-1; /* vertically and horizontally center */
 	}
