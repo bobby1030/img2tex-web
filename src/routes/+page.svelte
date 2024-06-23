@@ -1,24 +1,37 @@
 <script>
 	import Math from '$lib/components/Math.svelte';
 	import { enhance } from '$app/forms';
+	import { tick } from 'svelte';
 
 	let equationImgs;
-	let firstImgUrl;
 	let imgForm;
-	let imgBase64;
+	let firstImgBase64;
 
 	export let form;
 
-	$: if (equationImgs) {
-		// prepare preview
-		firstImgUrl = URL.createObjectURL(equationImgs[0]);
+	const fileToBase64 = (file) => {
+		return new Promise((resolve) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = (e) => resolve(e.target.result);
+		});
+	};
 
-		// convert image file to base64
-		const reader = new FileReader();
-		reader.readAsDataURL(equationImgs[0]);
-		reader.onload = (e) => {
-			imgBase64 = e.target.result;
-		};
+	$: firstImgUrl = equationImgs ? URL.createObjectURL(equationImgs[0]) : undefined;
+	$: if (equationImgs) {
+		fileToBase64(equationImgs[0]).then((b64) => (firstImgBase64 = b64));
+	} else {
+		firstImgBase64 = undefined;
+	}
+
+	// auto submit if image input is already present
+	$: if (firstImgBase64) {
+		// wait for image input to be updated
+		// otherwise, the form will be empty
+		tick().then(() => {
+			console.log(document.querySelector('#imgForm')[0]);
+			autoSubmit();
+		});
 	}
 
 	const dropHandler = (event) => {
@@ -39,6 +52,10 @@
 		} else {
 			equationImgs = [...event.clipboardData.files]; // need to spread to make it work
 		}
+	};
+
+	const autoSubmit = () => {
+		imgForm.requestSubmit();
 	};
 </script>
 
@@ -81,9 +98,13 @@
 				enctype="multipart/form-data"
 				action="?/postEquation"
 				bind:this={imgForm}
-				use:enhance
+				use:enhance={() => {
+					return async ({ update }) => {
+						await update({ reset: false });
+					};
+				}}
 			>
-				<input required type="hidden" name="equationImgBase64" value={imgBase64} />
+				<input required type="hidden" name="equationImgBase64" value={firstImgBase64} />
 			</form>
 			<button type="submit" form="imgForm" class="button">Convert to TeX</button>
 		</section>
