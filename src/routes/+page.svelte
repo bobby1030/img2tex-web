@@ -81,9 +81,11 @@
 
 <!-- Flexbox wrapper -->
 <div class="flex min-h-lvh items-center">
-	<main class="container mx-auto my-5">
-		<h1 class="text-4xl">Img2Tex</h1>
-		<h2 class="text-xl">Easily convert images with equations to TeX commands.</h2>
+	<main class="container mx-auto my-5 bg-base-100">
+		<section id="title">
+			<h1 class="text-4xl">Img2Tex</h1>
+			<h2 class="text-xl">Easily convert images with equations to TeX commands.</h2>
+		</section>
 		<section id="messages">
 			{#if errorMsg}
 				<ErrorAlert message={errorMsg} clickHandler={retryHandler} />
@@ -113,16 +115,24 @@
 			<button type="submit" form="imgForm" class="button">Convert to TeX</button>
 		</section>
 
-		<section>
-			<!-- Output -->
-			{#if form?.texOutput}
-				<h2>Output</h2>
-				<pre id="texedit" contenteditable bind:textContent={texOutput}></pre>
+		<!-- Output -->
+		<section id="output">
+			<h2 class="text-2xl my-2">TeX Output</h2>
+			<textarea
+				id="texeditor"
+				class="textarea textarea-border w-full min-h-36 bg-neutral text-neutral-content font-mono font-medium p-4"
+				placeholder="TeX commands will appear here."
+				bind:value={texOutput}
+			></textarea>
 
+			{#if texOutput}
 				{#key texOutput}
 					<!-- MathJax Preview -->
 					<Math>$${texOutput}$$</Math>
 				{/key}
+				<button class="btn btn-primary" on:click={() => navigator.clipboard.writeText(texOutput)}>
+					Copy to Clipboard
+				</button>
 			{/if}
 		</section>
 	</main>
@@ -130,18 +140,6 @@
 
 <style>
 	section {
-		@apply my-6;
-	}
-
-	#texedit {
-		width: 100%;
-		min-height: 8em;
-		border: 2px solid var(--primary-color);
-		border-radius: 5pt;
-		padding: 0.7em;
-		line-height: 1.5em;
-		font-family: monospace;
-		font-size: 12pt;
-		white-space: pre-wrap;
+		@apply mx-6 my-8;
 	}
 </style>
