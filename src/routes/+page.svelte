@@ -83,7 +83,7 @@
 <div class="flex min-h-lvh items-center">
 	<main class="container mx-auto my-5 bg-base-100">
 		<section id="title">
-			<h1 class="text-4xl">Img2Tex</h1>
+			<h1 class="text-4xl my-4">Img2Tex</h1>
 			<h2 class="text-xl">Easily convert images with equations to TeX commands.</h2>
 		</section>
 		<section id="messages">
