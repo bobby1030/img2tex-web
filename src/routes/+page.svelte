@@ -39,6 +39,7 @@
 	$: if (form) {
 		if (form.success) {
 			isLoading = false;
+			errorMsg = false;
 			texOutput = form.texOutput;
 		} else {
 			isLoading = false;
@@ -76,10 +77,11 @@
 	};
 </script>
 
-<div class="container">
-	<main>
-		<h1>LaTeX OCR Nougat</h1>
-		<p>Easily convert images with equations to TeX commands.</p>
+<!-- Flexbox wrapper -->
+<div class="flex min-h-lvh items-center">
+	<main class="container mx-auto my-5">
+		<h1 class="text-4xl">Img2Tex</h1>
+		<h2 class="text-xl">Easily convert images with equations to TeX commands.</h2>
 		<section id="messages">
 			{#if errorMsg}
 				<ErrorAlert message={errorMsg} clickHandler={retryHandler} />
@@ -129,38 +131,8 @@
 </div>
 
 <style>
-	:root {
-		--primary-color: rgb(56, 64, 72);
-	}
-
-	.container {
-		width: 100vw;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	h1 {
-		text-align: center;
-	}
-
-	.button {
-		background-color: var(--primary-color);
-		color: white;
-		border: none;
-		margin: 0.5em;
-		padding: 0.5em 1em;
-		border-radius: 5pt;
-		cursor: pointer;
-	}
-
-	main {
-		height: 100vh;
-		width: 60%;
-	}
-
 	section {
-		margin: 2em 0em;
+		@apply my-6;
 	}
 
 	#texedit {
