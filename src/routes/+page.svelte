@@ -1,6 +1,7 @@
 <script>
 	import Math from '$lib/components/Math.svelte';
 	import DragDrop from '$lib/components/DragDrop.svelte';
+	import ErrorAlert from '$lib/components/ErrorAlert.svelte';
 	import { enhance } from '$app/forms';
 	import { tick } from 'svelte';
 
@@ -30,7 +31,7 @@
 		// otherwise, the form will be empty
 		tick().then(() => {
 			isLoading = true;
-			autoSubmit();
+			submitForm();
 		});
 	}
 
@@ -64,7 +65,13 @@
 		}
 	};
 
-	const autoSubmit = () => {
+	// retry handler for error alert
+	const retryHandler = () => {
+		errorMsg = undefined;
+		submitForm();
+	};
+
+	const submitForm = () => {
 		imgForm.requestSubmit();
 	};
 </script>
@@ -73,6 +80,11 @@
 	<main>
 		<h1>LaTeX OCR Nougat</h1>
 		<p>Easily convert images with equations to TeX commands.</p>
+		<section id="messages">
+			{#if errorMsg}
+				<ErrorAlert message={errorMsg} clickHandler={retryHandler} />
+			{/if}
+		</section>
 		<section>
 			<!-- Drop and drop zone for image -->
 			<DragDrop

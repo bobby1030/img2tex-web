@@ -21,21 +21,19 @@ export async function queryHuggingFace(equationImgBase64) {
 
 	let response = await send_request(payload);
 
-	if (response.status == 503) {
-		// Retry once
-		console.log('Model is not ready, retrying...');
-		payload.parameters.wait_for_model = true;
-		response = await send_request(payload);
-	}
-
 	return new Promise((resolve, reject) => {
 		if (response.ok) {
 			response.json().then((data) => {
 				resolve(data);
 			});
 		} else {
-			response.text().then((text) => {
-				reject(text);
+			response.json().then((error) => {
+				console.log(error)
+				if (response.status === 503) {
+					reject('Hugging Face model is not ready. Please try again later.');
+				} else {
+					reject(error.error);
+				}
 			});
 		}
 	});

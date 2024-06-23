@@ -14,7 +14,7 @@ export const actions = {
 				};
 			})
 			.catch((err) => {
-				return fail(400, {
+				return fail(503, {
 					success: false,
 					message: err
 				});
