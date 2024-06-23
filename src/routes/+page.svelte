@@ -65,7 +65,12 @@
 		<p>Easily convert images with equations to TeX commands.</p>
 		<section>
 			<!-- Drop and drop zone for image -->
-			<DragDrop bind:files={equationImgs} previewImgUrl={firstImgUrl} {dropHandler} />
+			<DragDrop
+				bind:files={equationImgs}
+				previewImgUrl={firstImgUrl}
+				{dropHandler}
+				{pasteHandler}
+			/>
 
 			<!-- Form for final submit -->
 			<form
