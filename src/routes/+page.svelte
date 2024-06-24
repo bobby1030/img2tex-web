@@ -71,6 +71,7 @@
 	// retry handler for error alert
 	const retryHandler = () => {
 		errorMsg = undefined;
+		isLoading = true;
 		submitForm();
 	};
 
