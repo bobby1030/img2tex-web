@@ -8,6 +8,9 @@ export async function queryHuggingFace(equationImgBase64) {
 		inputs: imageBase64, // Image in base64
 		parameters: {
 			max_new_tokens: 500 // Prevent Hugging Face from truncating the output
+		},
+		options: {
+
 		}
 	};
 
@@ -30,7 +33,7 @@ export async function queryHuggingFace(equationImgBase64) {
 			response.json().then((error) => {
 				console.log(error)
 				if (response.status === 503) {
-					reject('Hugging Face model is not ready. Please try again later.');
+					reject('Hugging Face model is warming up. Please try again in a few seconds.');
 				} else {
 					reject(error.error);
 				}
